@@ -2,7 +2,7 @@
 
 namespace Ratings.Models
 {
-    public class UserModel
+    public class UserViewModel
     {
         [Required(ErrorMessage = "Wprowadź jakąś wartość")]
         [RegularExpression(@"^[A-Za-z0-9_]+$", ErrorMessage = "Login powinien składać się jedynie z wielkich i małych liter, cyfr oraz znaków podkreślenia")]

@@ -34,28 +34,19 @@
                     <nav>
                         <ul class="nav flex-column">
                             <li class="nav-item mt-3">
-                                <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary w-100">Strona główna</a>
+                                <a asp-controller="Ratings" asp-action="Index" class="btn btn-outline-primary w-100">Strona główna</a>
                             </li>
                             <li class="nav-item mt-3">
-                                <a asp-controller="Home" asp-action="SomeOtherPage" class="btn btn-outline-primary w-100">Jakaś tam strona</a>
+                                <a asp-controller="Ratings" asp-action="ShowArtists" class="btn btn-outline-primary w-100">Spis twórców</a>
                             </li>
                             @if (userRoleIndicator >= 1)
                             {
-                                <li class="nav-item mt-3">
-                                    <a asp-controller="Home" asp-action="ForUser" class="btn btn-outline-primary w-100">Dla zalogowanych</a>
-                                </li>
                             }
                             @if (userRoleIndicator >= 2)
                             {
-                                <li class="nav-item mt-3">
-                                    <a asp-controller="Home" asp-action="ForModerator" class="btn btn-outline-primary w-100">Moderowanie stroną</a>
-                                </li>
                             }
                             @if (userRoleIndicator >= 3)
                             {
-                                <li class="nav-item mt-3">
-                                    <a asp-controller="Home" asp-action="ForAdmin" class="btn btn-outline-primary w-100">Opcje zaawansowane</a>
-                                </li>
                                 <li class="nav-item mt-3">
                                     <a asp-controller="Account" asp-action="ShowUsers" class="btn btn-outline-primary w-100">Zarządzanie użytkownikami</a>
                                 </li>

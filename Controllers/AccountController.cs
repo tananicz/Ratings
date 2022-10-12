@@ -21,21 +21,21 @@ namespace Ratings.Controllers
         public IActionResult Login([FromQuery] string ReturnUrl)
         {
             ViewBag.ReturnUrl = ReturnUrl;
-            return View(new UserModel());
+            return View(new UserViewModel());
         }
 
         [HttpPost]
-        public async Task<IActionResult> PerformLogin(UserModel userModel, string returnUrl)
+        public async Task<IActionResult> PerformLogin(UserViewModel userModel, string returnUrl)
         {
-            ModelState.Remove(nameof(UserModel.CofirmPassword));
-            ModelState.Remove(nameof(UserModel.AcceptRules));
+            ModelState.Remove(nameof(UserViewModel.CofirmPassword));
+            ModelState.Remove(nameof(UserViewModel.AcceptRules));
 
             if (ModelState.IsValid)
             {
                 Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(userModel.UserName, userModel.Password, false, false);
                 if (result.Succeeded)
                 {
-                    return String.IsNullOrEmpty(returnUrl) ? RedirectToAction("Index", "Home") : Redirect(returnUrl);
+                    return String.IsNullOrEmpty(returnUrl) ? RedirectToAction("Ratings", "Index") : Redirect(returnUrl);
                 }
                 ModelState.AddModelError("", "Nieprawidłowa nazwa użytkownika lub hasło");
             }
@@ -46,34 +46,34 @@ namespace Ratings.Controllers
         public IActionResult CreateAccount([FromQuery] string ReturnUrl)
         {
             ViewBag.ReturnUrl = ReturnUrl;
-            return View(new UserModel());
+            return View(new UserViewModel());
         }
 
         [HttpPost]
-        public async Task<IActionResult> PerformCreate(UserModel userModel, string returnUrl)
+        public async Task<IActionResult> PerformCreate(UserViewModel userModel, string returnUrl)
         {
             if (await DoesUserExist(userModel.UserName))
             {
-                ModelState.AddModelError(nameof(UserModel.UserName), $"W serwisie już istnieje użytkownik {userModel.UserName}");
+                ModelState.AddModelError(nameof(UserViewModel.UserName), $"W serwisie już istnieje użytkownik {userModel.UserName}");
             }
 
             if (!IsPasswordValid(userModel.Password))
             {
-                ModelState.AddModelError(nameof(UserModel.Password), "Hasło powinno zawierać przynajmniej jedną wielką literę, jedną małą literę, jedną cyfrę i jeden znak specjalny: _ @ # $ % ^ & *");
+                ModelState.AddModelError(nameof(UserViewModel.Password), "Hasło powinno zawierać przynajmniej jedną wielką literę, jedną małą literę, jedną cyfrę i jeden znak specjalny: _ @ # $ % ^ & *");
             }
             
             if (String.IsNullOrEmpty(userModel.CofirmPassword))
             {
-                ModelState.AddModelError(nameof(UserModel.CofirmPassword), "Musisz potwierdzić hasło");
+                ModelState.AddModelError(nameof(UserViewModel.CofirmPassword), "Musisz potwierdzić hasło");
             } 
             else if (!userModel.Password.Equals(userModel.CofirmPassword))
             {
-                ModelState.AddModelError(nameof(UserModel.CofirmPassword), "Oba hasła muszą być takie same");
+                ModelState.AddModelError(nameof(UserViewModel.CofirmPassword), "Oba hasła muszą być takie same");
             }
 
             if (!userModel.AcceptRules)
             {
-                ModelState.AddModelError(nameof(UserModel.AcceptRules), "Musisz zaakceptować regulamin serwisu");
+                ModelState.AddModelError(nameof(UserViewModel.AcceptRules), "Musisz zaakceptować regulamin serwisu");
             }
 
             if (ModelState.IsValid)
@@ -86,7 +86,7 @@ namespace Ratings.Controllers
                     if (result.Succeeded)
                     {
                         ViewBag.ReturnUrl = returnUrl;
-                        return View(new UserModel
+                        return View(new UserViewModel
                         {
                             UserName = userModel.UserName
                         });
@@ -108,7 +108,7 @@ namespace Ratings.Controllers
         public async Task<IActionResult> Logout([FromQuery] string ReturnUrl)
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Ratings");
         }
 
         [Authorize(Roles = "admin")]
@@ -124,7 +124,7 @@ namespace Ratings.Controllers
             if (user != null)
             {
                 IList<string> roles = await _userMgr.GetRolesAsync(user);
-                UserModel userModel = new UserModel
+                UserViewModel userModel = new UserViewModel
                 {
                     UserName = user.UserName,
                     Role = roles.First(),
@@ -140,24 +140,24 @@ namespace Ratings.Controllers
 
         [HttpPost]
         [Authorize(Roles = "admin")]
-        public async Task<IActionResult> PerformEditUser(UserModel userModel)
+        public async Task<IActionResult> PerformEditUser(UserViewModel userModel)
         {
             if (String.IsNullOrEmpty(userModel.Password) && String.IsNullOrEmpty(userModel.CofirmPassword))
             {
                 //in case the user didn't touch password inputs we don't change password and hence don't need it's validation
-                ModelState.Remove(nameof(UserModel.Password));
+                ModelState.Remove(nameof(UserViewModel.Password));
             }
 
             if (!String.IsNullOrEmpty(userModel.Password))
             {
                 if (String.IsNullOrEmpty(userModel.CofirmPassword) || !userModel.CofirmPassword.Equals(userModel.Password))
                 {
-                    ModelState.AddModelError(nameof(UserModel.CofirmPassword), "Oba hasła muszą mieć tę samą wartość");
+                    ModelState.AddModelError(nameof(UserViewModel.CofirmPassword), "Oba hasła muszą mieć tę samą wartość");
                 }
 
                 if (!IsPasswordValid(userModel.Password))
                 {
-                    ModelState.AddModelError(nameof(UserModel.Password), "Hasło powinno zawierać przynajmniej jedną wielką literę, jedną małą literę, jedną cyfrę i jeden znak specjalny: _ @ # $ % ^ & *");
+                    ModelState.AddModelError(nameof(UserViewModel.Password), "Hasło powinno zawierać przynajmniej jedną wielką literę, jedną małą literę, jedną cyfrę i jeden znak specjalny: _ @ # $ % ^ & *");
                 }
             }
 
@@ -178,7 +178,7 @@ namespace Ratings.Controllers
                 {
                     if (await DoesUserExist(userModel.UserName))
                     {
-                        ModelState.AddModelError(nameof(UserModel.UserName), $"W serwisie już istnieje użytkownik '{userModel.UserName}'");
+                        ModelState.AddModelError(nameof(UserViewModel.UserName), $"W serwisie już istnieje użytkownik '{userModel.UserName}'");
                         succeeded = false;
                     }
                     else

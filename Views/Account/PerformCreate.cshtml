@@ -1,4 +1,4 @@
-﻿@model UserModel
+﻿@model UserViewModel
 
 @{
     Layout = "_NoLoginAndNavLayout";
@@ -20,7 +20,7 @@
             {
                 <a href="@ViewBag.ReturnUrl" class="btn btn-outline-secondary">Powrót</a>
             }
-            <a asp-action="Index" asp-controller="Home" class="btn btn-outline-secondary">Strona główna</a>
+            <a asp-action="Index" asp-controller="Ratings" class="btn btn-outline-secondary">Strona główna</a>
         </div>
     </div>
 </div>

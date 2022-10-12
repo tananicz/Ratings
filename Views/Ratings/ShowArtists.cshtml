@@ -1,0 +1,49 @@
+﻿@model IEnumerable<Artist>
+
+<style>
+    .artistRow {
+        background-color: #eee;
+    }
+
+    .artistRow:hover {
+        background-color: #ddd;
+    }
+
+    .artistRow td {
+        padding: 15px;
+    }
+
+    .artistRow h4 a {
+        text-decoration: none;
+    }
+
+    .artistRow h4 a:hover {
+        text-decoration: underline;
+    }
+
+    .artistsTable {
+        border-collapse: separate;
+        border-spacing: 0 15px;
+    }
+</style>
+
+<div class="m-2">
+    <table class="table table-sm table-borderless artistsTable">
+        <tbody>
+            @foreach (Artist artist in Model)
+            {
+                bool hasPhoto = artist.Photo != null;
+                <tr class="artistRow">
+                    <td colspan="@(hasPhoto ? "1" : "2")">
+                        <h4><a asp-action="ShowArtistAndWorks" asp-route-id="@artist.Id">@artist.FirstName @artist.Surname</a></h4>
+                        <p>@artist.Bio</p>
+                    </td>
+                    @if (hasPhoto)
+                    {
+                        <td style="width: 200px;">Zdjęcie</td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

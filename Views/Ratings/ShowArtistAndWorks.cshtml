@@ -1,0 +1,60 @@
+﻿@model ArtistViewModel
+
+<style>
+    .artistRow {
+        background-color: #eee;
+    }
+
+    .artistRow td {
+        padding: 15px;
+    }
+
+    .worksTable {
+        border-collapse: separate;
+        border-spacing: 0 5px;
+    }
+
+    .workRow:hover {
+        background-color: #eee;
+    }
+</style>
+
+<div class="m-2">
+    <table class="table table-sm table-borderless worksTable">
+        <tbody>
+            @{ bool hasPhoto = Model.Artist.Photo != null; }
+            <tr class="artistRow">
+                @if (hasPhoto)
+                {
+                    <td style="width: 200px;">Zdjęcie</td>
+                }
+                <td colspan="@(hasPhoto ? "1" : "2")">
+                    <h4><a>@Model.Artist.FirstName @Model.Artist.Surname</a></h4>
+                    <p>@Model.Artist.Bio</p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="m-2">
+    <table class="table table-sm table-borderless worksTable">
+        <thead>
+            <tr>
+                <th>Tytuł utworu</th>
+                <th>Data wydania</th>
+                <th>Średnia ocena</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Work work in Model.Works)
+            {
+                <tr class="workRow">
+                    <td>@work.Name</td>
+                    <td>@work.Year</td>
+                    <td>@(work.AvgRating != 0 ? work.AvgRating : "brak")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

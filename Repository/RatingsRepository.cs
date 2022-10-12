@@ -1,4 +1,5 @@
-﻿using Ratings.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Ratings.Models;
 
 namespace Ratings.Repository
 {
@@ -24,6 +25,11 @@ namespace Ratings.Repository
         public List<Work> GetArtistsWorks(int id)
         {
             return _context.Works.Where(w => w.ArtistId == id).ToList();
+        }
+
+        public async Task<Rating> GetRating(int workId, string userName)
+        {
+            return await _context.Ratings.Include(r => r.Work).Where(r => r.UserName == userName && r.WorkId == workId).SingleOrDefaultAsync();
         }
     }
 }

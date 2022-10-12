@@ -1,5 +1,15 @@
 ﻿@model IEnumerable<Artist>
 
+@{
+    int userRoleIndicator = ViewBag.UserRoleIndicator; 
+    /*
+    value above is set by Ratings.Filter.RoleAdderFilter: 
+    1 - user 
+    2 - moderator
+    3 - admin
+    */
+}
+
 <style>
     .artistRow {
         background-color: #eee;
@@ -37,6 +47,10 @@
                     <td colspan="@(hasPhoto ? "1" : "2")">
                         <h4><a asp-action="ShowArtistAndWorks" asp-route-id="@artist.Id">@artist.FirstName @artist.Surname</a></h4>
                         <p>@artist.Bio</p>
+                        @if (userRoleIndicator >= 2)
+                        {
+                            <p class="float-end"><a href="#" class="btn btn-sm btn-warning">Edytuj artystę</a></p>
+                        }
                     </td>
                     @if (hasPhoto)
                     {

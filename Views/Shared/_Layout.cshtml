@@ -1,18 +1,5 @@
 ﻿@{
-    int userRoleIndicator = 0;
-
-    if (User.IsInRole("admin"))
-    {
-        userRoleIndicator = 3;
-    }
-    else if (User.IsInRole("moderator"))
-    {
-        userRoleIndicator = 2;
-    }
-    else if (User.IsInRole("user"))
-    {
-        userRoleIndicator = 1;
-    }
+    int userRoleIndicator = ViewBag.UserRoleIndicator; //this value is set by Ratings.Filter.RoleAdderFilter
 }
 
 <!DOCTYPE html>

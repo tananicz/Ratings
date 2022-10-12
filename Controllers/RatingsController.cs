@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Ratings.Filters;
 using Ratings.Models;
 using Ratings.Repository;
 
 namespace Ratings.Controllers
 {
+    [RoleAdderFilter]
     public class RatingsController : Controller
     {
         private RatingsRepository _repository;
@@ -31,6 +34,12 @@ namespace Ratings.Controllers
                 Works = _repository.GetArtistsWorks(id)
             };
             return View(viewModel);
+        }
+
+        [Authorize(Roles = "user,moderator,admin")]
+        public IActionResult RateAWork(int id)
+        {
+            return View(_repository.GetRating(id, User.Identity.Name));
         }
     }
 }

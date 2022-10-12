@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Ratings.Filters;
 using Ratings.Models;
 using System.Text.RegularExpressions;
 
 namespace Ratings.Controllers
 {
+    [RoleAdderFilter]
     [AutoValidateAntiforgeryToken]
     public class AccountController : Controller
     {

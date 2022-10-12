@@ -1,5 +1,15 @@
 ﻿@model ArtistViewModel
 
+@{
+    int userRoleIndicator = ViewBag.UserRoleIndicator; 
+    /*
+    value above is set by Ratings.Filter.RoleAdderFilter: 
+    1 - user 
+    2 - moderator
+    3 - admin
+    */
+}
+
 <style>
     .artistRow {
         background-color: #eee;
@@ -31,6 +41,10 @@
                 <td colspan="@(hasPhoto ? "1" : "2")">
                     <h4><a>@Model.Artist.FirstName @Model.Artist.Surname</a></h4>
                     <p>@Model.Artist.Bio</p>
+                    @if (userRoleIndicator >= 2)
+                    {
+                        <p class="float-end"><a href="#" class="btn btn-sm btn-warning">Edytuj artystę</a></p>
+                    }
                 </td>
             </tr>
         </tbody>
@@ -44,6 +58,10 @@
                 <th>Tytuł utworu</th>
                 <th>Data wydania</th>
                 <th>Średnia ocena</th>
+                @if (userRoleIndicator >= 1)
+                {
+                    <th>Akcje</th>    
+                }
             </tr>
         </thead>
         <tbody>
@@ -53,6 +71,10 @@
                     <td>@work.Name</td>
                     <td>@work.Year</td>
                     <td>@(work.AvgRating != 0 ? work.AvgRating : "brak")</td>
+                    @if (userRoleIndicator >= 1)
+                    {
+                        <td><a asp-action="RateAWork" asp-route-id="@work.Id" class="btn btn-sm btn-warning">Oceń</a></td>
+                    }
                 </tr>
             }
         </tbody>

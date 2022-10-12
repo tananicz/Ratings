@@ -1,0 +1,11 @@
+﻿<div class="m-2 float-end">
+    @if (User.Identity.IsAuthenticated)
+    {
+        <span style="display: inline-block; margin-right: 10px;">Witaj <strong>@User.Identity.Name!</strong></span>
+        <a asp-controller="Account" asp-action="Logout" asp-route-ReturnUrl="@Context.Request.Path" class="btn btn-sm btn-outline-secondary">Wyloguj się</a>
+    }
+    else
+    {
+        <a asp-controller="Account" asp-action="Login" asp-route-ReturnUrl="@Context.Request.Path" class="btn btn-sm btn-primary">Zaloguj się</a>
+    }
+</div>

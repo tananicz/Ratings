@@ -1,0 +1,26 @@
+﻿@model UserModel
+
+@{
+    Layout = "_NoLoginAndNavLayout";
+}
+
+<div class="container">
+    <div>
+        <div class="bg-primary text-white text-center p-4 mt-5 mb-3">Witamy wśród użytkowników strony</div>
+        <div class="mt-2">
+            <p>Witaj <strong>@Model.UserName!</strong></p>
+            <p>
+                Od tej chwili należysz do prężnie rozrastającej się społeczności naszego portalu!<br/>
+                Teraz możesz się zalogować.
+            </p>
+        </div>
+        <div class="mt-5">
+            <a asp-action="Login" asp-controller="Account" asp-route-ReturnUrl="@ViewBag.ReturnUrl" class="btn btn-primary">Zaloguj się</a>
+            @if (!String.IsNullOrEmpty(ViewBag.ReturnUrl) && !((string)ViewBag.ReturnUrl).Equals("/"))
+            {
+                <a href="@ViewBag.ReturnUrl" class="btn btn-outline-secondary">Powrót</a>
+            }
+            <a asp-action="Index" asp-controller="Home" class="btn btn-outline-secondary">Strona główna</a>
+        </div>
+    </div>
+</div>

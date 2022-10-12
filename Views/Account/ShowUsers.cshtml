@@ -1,0 +1,37 @@
+﻿@model IEnumerable<IdentityUser>
+@inject UserManager<IdentityUser> userMgr
+
+<link rel="stylesheet" href="~/css/DialogStyles.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="~/js/DialogScripts.js"></script>
+
+<h4 class="bg-primary text-center text-white p-2 mt-4 mb-4">Lista użytkowników aplikacji</h4>
+
+<table class="table table-sm table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Nazwa użytkownika</th>
+            <th>Identyfikator</th>
+            <th>Rola</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (IdentityUser user in Model)
+        {
+            string role = (await userMgr.GetRolesAsync(user)).FirstOrDefault() ?? "";
+            <tr>
+                <td>@user.UserName</td>
+                <td>@user.Id</td>
+                <td>@role</td>
+                <td class="text-center">
+                    <form asp-action="DeleteUser" method="post" id="form@(user.Id)">
+                        <input name="userId" value="@user.Id" hidden />
+                        <a asp-action="EditUser" asp-route-id="@user.Id" class="btn btn-sm btn-warning">Edytuj</a>
+                        <button type="button" class="btn btn-sm btn-danger" onclick="confirmDeleteUser('form@(user.Id)', '@role')">Usuń</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

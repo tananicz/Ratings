@@ -1,0 +1,71 @@
+﻿@{
+    int userRoleIndicator = 0;
+
+    if (User.IsInRole("admin"))
+    {
+        userRoleIndicator = 3;
+    }
+    else if (User.IsInRole("moderator"))
+    {
+        userRoleIndicator = 2;
+    }
+    else if (User.IsInRole("user"))
+    {
+        userRoleIndicator = 1;
+    }
+}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Ratings</title>
+        <link rel="stylesheet" href="~/lib/twitter-bootstrap/css/bootstrap.min.css" />
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-2"></div>
+                <div class="col-8"><vc:signed-in-user-component /></div>
+                <div class="col-2"></div>
+            </div>
+            <div class="row">
+                <div class="col-2"></div>
+                <div class="col-1">
+                    <nav>
+                        <ul class="nav flex-column">
+                            <li class="nav-item mt-3">
+                                <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary w-100">Strona główna</a>
+                            </li>
+                            <li class="nav-item mt-3">
+                                <a asp-controller="Home" asp-action="SomeOtherPage" class="btn btn-outline-primary w-100">Jakaś tam strona</a>
+                            </li>
+                            @if (userRoleIndicator >= 1)
+                            {
+                                <li class="nav-item mt-3">
+                                    <a asp-controller="Home" asp-action="ForUser" class="btn btn-outline-primary w-100">Dla zalogowanych</a>
+                                </li>
+                            }
+                            @if (userRoleIndicator >= 2)
+                            {
+                                <li class="nav-item mt-3">
+                                    <a asp-controller="Home" asp-action="ForModerator" class="btn btn-outline-primary w-100">Moderowanie stroną</a>
+                                </li>
+                            }
+                            @if (userRoleIndicator >= 3)
+                            {
+                                <li class="nav-item mt-3">
+                                    <a asp-controller="Home" asp-action="ForAdmin" class="btn btn-outline-primary w-100">Opcje zaawansowane</a>
+                                </li>
+                                <li class="nav-item mt-3">
+                                    <a asp-controller="Account" asp-action="ShowUsers" class="btn btn-outline-primary w-100">Zarządzanie użytkownikami</a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
+                <div class="col-7">@RenderBody()</div>
+                <div class="col-2"></div>
+            </div>
+        </div>
+    </body>
+</html>

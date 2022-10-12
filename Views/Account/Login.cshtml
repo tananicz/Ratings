@@ -1,0 +1,36 @@
+﻿@model UserModel
+
+@{
+    Layout = "_NoLoginAndNavLayout";
+}
+
+<div class="container">
+    <div>
+        <div class="bg-primary text-white text-center p-4 mt-5 mb-3">Logowanie</div>
+        <form method="post" asp-action="PerformLogin">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" name="ReturnUrl" value="@(ViewBag.ReturnUrl)" />
+            <div class="form-group mt-2">
+                <label>Nazwa użytkownika</label>
+                <div><span asp-validation-for="UserName" class="text-danger"></span></div>
+                <input asp-for="UserName" class="form-control" />
+            </div>
+            <div class="form-group mt-2">
+                <label>Hasło</label>
+                <div><span asp-validation-for="Password" class="text-danger"></span></div>
+                <input asp-for="Password" type="password" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Zaloguj się</button>
+        </form>
+        <div class="mt-2">
+            Nie masz jeszcze konta? <a asp-action="CreateAccount" asp-route-ReturnUrl="@(ViewBag.ReturnUrl)">Zarejestruj się</a>
+        </div>
+        <div class="mt-5">
+            @if (!String.IsNullOrEmpty(ViewBag.ReturnUrl) && !((string)ViewBag.ReturnUrl).Equals("/"))
+            {
+                <a class="btn btn-outline-primary" href="@(ViewBag.ReturnUrl)">Powrót</a>
+            }
+            <a class="btn btn-outline-secondary" asp-action="Index" asp-controller="Home">Strona główna</a>
+        </div>
+    </div>
+</div>

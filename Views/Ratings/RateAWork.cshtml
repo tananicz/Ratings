@@ -1,7 +1,54 @@
 ﻿@model Rating
+@inject RatingsRepository repository
+
+@{
+    Work currentWork;
+    if (null == Model || null == Model.Work)
+    {
+        currentWork = await repository.GetWork(ViewBag.WorkId ?? Model.WorkId, true);
+    }
+    else
+    {
+        currentWork = Model.Work;
+    }
+
+    List<SelectListItem> selectListItems = new List<SelectListItem>()
+    {
+        new SelectListItem { Value = "1,00", Text = "1" },
+        new SelectListItem { Value = "1,50", Text = "1,5" },
+        new SelectListItem { Value = "2,00", Text = "2" },
+        new SelectListItem { Value = "2,50", Text = "2,5" },
+        new SelectListItem { Value = "3,00", Text = "3" },
+        new SelectListItem { Value = "3,50", Text = "3,5" },
+        new SelectListItem { Value = "4,00", Text = "4" },
+        new SelectListItem { Value = "4,50", Text = "4,5" },
+        new SelectListItem { Value = "5,00", Text = "5" },
+    };
+}
 
 <div class="m-2">
-    <form>
-        <input type="hidden" asp-for="Id" />
+    <form asp-action="SaveRating" method="post">
+        <input name="Id" value="@(Model != null ? Model.Id : 0)" hidden />
+        <input name="WorkId" value="@currentWork.Id" hidden />
+        <div class="bg-light p-4">
+            <h4>@currentWork.Artist.FirstName @currentWork.Artist.Surname</h4>
+            <h3>@currentWork.Name (@currentWork.Year)</h3>
+            <p>Średnia ocena: @(currentWork.AvgRating != 0 ? currentWork.AvgRating : "brak")</p>
+        </div>
+        <div class="mt-2 p-2">
+            <p>Twoja ocena:</p>
+            <div><span asp-validation-for="RatingValue" class="text-danger"></span></div>
+            <select asp-for="RatingValue" asp-items="selectListItems" class="form-select">
+                <option disabled selected>wybierz</option>
+            </select>
+        </div>
+        <div class="mt-2 p-2">
+            <p>Twoja recenzja:</p>
+            <textarea asp-for="Review" class="form-control" style="resize: none;" rows="10"></textarea>
+        </div>
+        <div class="p-2 mt-4">
+            <button type="submit" class="btn btn-primary">Zapisz</button>
+            <a asp-action="ShowArtistAndWorks" asp-route-id="@currentWork.ArtistId" class="btn btn-secondary">Powrót</a>
+        </div>
     </form>
 </div>

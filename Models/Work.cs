@@ -12,6 +12,7 @@ namespace Ratings.Models
         public string Name { get; set; }
 
         [Required]
+        [Range(1, 2100, ErrorMessage = "Podaj datę nowożytną")]
         public int Year { get; set; }
 
         [Column(TypeName = "decimal(3, 2)")]

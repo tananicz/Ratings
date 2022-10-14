@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Ratings.Filters;
 using Ratings.Models;
 using Ratings.Repository;
+using System.Text.RegularExpressions;
 
 namespace Ratings.Controllers
 {
@@ -26,20 +27,163 @@ namespace Ratings.Controllers
             return View(_repository.GetArtists());
         }
 
-        public IActionResult ShowArtistAndWorks(int id)
+        public async Task<IActionResult> ShowArtistAndWorks(int id)
         {
             ArtistViewModel viewModel = new ArtistViewModel
             {
-                Artist = _repository.GetArtist(id),
+                Artist = await _repository.GetArtist(id),
                 Works = _repository.GetArtistsWorks(id)
             };
             return View(viewModel);
         }
 
         [Authorize(Roles = "user,moderator,admin")]
-        public IActionResult RateAWork(int id)
+        public async Task<IActionResult> RateAWork([FromRoute(Name = "id")] int workId)
         {
-            return View(_repository.GetRating(id, User.Identity.Name));
+            ViewBag.WorkId = workId;
+            return View(await _repository.GetRating(workId, User.Identity.Name));
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "user,moderator,admin")]
+        public async Task<IActionResult> SaveRating(Rating rating)
+        {
+            if (ModelState.IsValid)
+            {
+                rating.UserName = User.Identity.Name;
+                if (rating.Review != null)
+                { 
+                    rating.Review = Regex.Replace(rating.Review, @"\s+", " ");
+                    rating.Review = Regex.IsMatch(rating.Review, @"^\s+$") ? "" : rating.Review;
+                }
+
+                if (rating.Id == 0)
+                {
+                    await _repository.AddRating(rating);
+                }
+                else
+                {
+                    await _repository.UpdateRating(rating);
+                }
+
+                Work work = await _repository.GetWork(rating.WorkId, true);
+                work.AvgRating = await _repository.ComputeRatingForWork(rating.WorkId);
+                await _repository.UpdateWork(work);
+
+                return RedirectToAction("ShowArtistAndWorks", new { id = work.ArtistId });
+            }
+            return View("RateAWork", rating);
+        }
+
+        [Authorize(Roles = "moderator,admin")]
+        public IActionResult AddArtist()
+        {
+            return View("AddOrEditArtist", new ArtistViewModel());
+        }
+
+        [Authorize(Roles = "moderator,admin")]
+        public async Task<IActionResult> EditArtist(int id, string returnUrl)
+        {
+            ViewBag.ReturnUrl = returnUrl;
+            ArtistViewModel viewModel = new ArtistViewModel
+            {
+                Artist = await _repository.GetArtist(id),
+                Works = _repository.GetArtistsWorks(id)
+            };
+            return View("AddOrEditArtist", viewModel);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "moderator,admin")]
+        public async Task<IActionResult> PerformAddOrEditArtist([FromForm(Name = "Artist")] Artist artist, string returnUrl)
+        {
+            if (ModelState.IsValid)
+            {
+                if (artist.Id == 0)
+                {
+                    await _repository.AddArtist(artist);
+                }
+                else
+                {
+                    await _repository.UpdateArtist(artist);
+                }
+                return returnUrl != null ? Redirect(returnUrl) : RedirectToAction("ShowArtists");
+            }
+            ViewBag.ReturnUrl = returnUrl;
+            return View("AddOrEditArtist", new ArtistViewModel 
+            { 
+                Artist = artist,
+                Works = _repository.GetArtistsWorks(artist.Id)
+            });
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "moderator,admin")]
+        public async Task<IActionResult> DeleteArtist(int id)
+        {
+            Artist artistToRemove = await _repository.GetArtist(id);
+            if (artistToRemove != null)
+            {
+                await _repository.DeleteArtist(artistToRemove);
+                return RedirectToAction("ShowArtists");
+            }
+            else
+            {
+                return new StatusCodeResult(StatusCodes.Status403Forbidden);
+            }
+        }
+
+        [Authorize(Roles = "moderator,admin")]
+        public async Task<IActionResult> AddWork([FromRoute(Name = "id")] int artistId, string returnUrlForEdit)
+        {
+            ViewBag.ReturnUrlForEdit = returnUrlForEdit;
+            Artist artist = await _repository.GetArtist(artistId);
+            if (artist != null)
+            {
+                return View("AddOrEditWork", new Work
+                {
+                    Artist = artist,
+                });
+            }
+            return new StatusCodeResult(StatusCodes.Status403Forbidden);
+        }
+
+        [Authorize(Roles = "moderator,admin")]
+        public async Task<IActionResult> EditWork(int id, string returnUrlForEdit)
+        {
+            ViewBag.ReturnUrlForEdit = returnUrlForEdit;
+            Work work = await _repository.GetWork(id, true);
+            if (work != null)
+            {
+                return View("AddOrEditWork", work);
+            }
+            return new StatusCodeResult(StatusCodes.Status403Forbidden);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "moderator,admin")]
+        public async Task<IActionResult> PerformAddOrEditWork(Work work, string returnUrlForEdit)
+        {
+            if (work.Year > DateTime.Now.Year)
+            {
+                ModelState.AddModelError(nameof(Work.Year), "Rok wydania nie może pochodzić z przyszłości");
+            }
+
+            if (ModelState.IsValid)
+            {
+                if (work.Id == 0)
+                { 
+                    await _repository.AddWork(work);
+                }
+                else
+                {
+                    await _repository.UpdateWork(work);
+                }
+                return RedirectToAction("EditArtist", new { id = work.ArtistId, returnUrl = returnUrlForEdit });
+            }
+            ViewBag.ReturnUrlForEdit = returnUrlForEdit;
+            work.Artist = await _repository.GetArtist(work.ArtistId);
+            return View("AddOrEditWork", work);
         }
     }
 }

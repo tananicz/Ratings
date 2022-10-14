@@ -7,6 +7,7 @@ namespace Ratings.Models
     {
         public int Id { get; set; }
 
+        [Range(1, 5, ErrorMessage = "Musisz ocenić utwór")]
         [Column(TypeName = "decimal(3, 2)")]
         public decimal RatingValue { get; set; }
 

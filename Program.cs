@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Ratings.Repository;
 
@@ -15,6 +16,10 @@ builder.Services.AddDbContext<RatingsContext>(opts =>
     opts.UseSqlServer(builder.Configuration["ConnectionStrings:RatingsConnection"]);
 });
 builder.Services.AddScoped<RatingsRepository>();
+builder.Services.Configure<MvcOptions>(opts => {
+    opts.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor((value) => "Proszê wprowadziæ wartoœæ");
+    opts.ModelBindingMessageProvider.SetAttemptedValueIsInvalidAccessor((value, type) => $"Wartoœæ '{value}' nie jest poprawna dla pola typu {type}");
+});
 
 var app = builder.Build();
 

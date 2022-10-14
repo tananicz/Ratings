@@ -1,0 +1,91 @@
+﻿@model ArtistViewModel
+
+<h4 class="bg-info text-white text-center mt-2 mb-5 p-4">@(Model.Artist != null && Model.Artist.Id != 0 ? "Edytuj" : "Dodaj") twórcę</h4>
+
+<link rel="stylesheet" href="~/css/DialogStyles.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="~/js/DialogScripts.js"></script>
+
+<div class="mt-2">
+    <form asp-action="PerformAddOrEditArtist" method="post" id="artistForm">
+        @{
+            //TODO: photo section
+        }
+
+        @if (Model.Artist != null)
+        {
+            <input asp-for="Artist.Id" hidden />
+        }
+        else
+        {
+            <input name="Artist.Id" value="0" hidden />
+        }
+        <div class="form-group mb-4">
+            <label>Imię</label>
+            <div><span asp-validation-for="Artist.FirstName" class="text-danger"></span></div>
+            <input asp-for="Artist.FirstName" class="form-control" />
+        </div>
+        <div class="form-group mb-4">
+            <label>Nazwisko</label>
+            <div><span asp-validation-for="Artist.Surname" class="text-danger"></span></div>
+            <input asp-for="Artist.Surname" class="form-control" />
+        </div>
+        <div class="form-group mb-4">
+            <label>Krótki opis / biografia:</label>
+            <div><span asp-validation-for="Artist.Bio" class="text-danger"></span></div>
+            <textarea asp-for="Artist.Bio" class="form-control" rows="5" style="resize: none;"></textarea>
+        </div>
+        @if (ViewBag.ReturnUrl != null)
+        {
+            <input name="returnUrl" value="@ViewBag.ReturnUrl" hidden />
+        }
+    </form>
+</div>
+
+@if (Model.Works != null && Model.Works.Count() > 0)
+{
+    <div class="mt-2">
+        <h5 class="mb-3 mt-5">Lista utworów:</h5>
+        <table class="table table-sm table-borderless table-striped">
+            <thead>
+                <tr>
+                    <th>Tytuł utworu</th>
+                    <th>Data wydania</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Work work in Model.Works)
+                {
+                    <tr class="workRow">
+                        <td>@work.Name</td>
+                        <td>@work.Year</td>
+                        <td>
+                            <form id="work@(work.Id)Form" class="float-end">
+                                <a asp-action="EditWork" asp-route-id="@(work.Id)" asp-route-returnUrlForEdit="@ViewBag.ReturnUrl" class="btn btn-sm btn-warning">Edytuj utwór</a>
+                                <button type="button" onclick="confirmDeleteWork('work@(work.Id)Form');" class="btn btn-sm btn-danger">Usuń utwór</button>
+                            </form>    
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+@if (Model.Artist != null && Model.Artist.Id != 0)
+{
+    <div>
+        <a asp-action="AddWork" asp-route-id="@Model.Artist.Id" asp-route-returnUrlForEdit="@ViewBag.ReturnUrl" class="btn btn-sm btn-warning">Dodaj utwór</a>
+    </div>
+}
+<div class="mt-5">
+    <button form="artistForm" type="submit" class="btn btn-primary">Zapisz</button>
+    @if (ViewBag.ReturnUrl != null)
+    {
+        <a href="@ViewBag.ReturnUrl" class="btn btn-secondary">Powrót</a>
+    }
+    else
+    {
+        <a asp-action="ShowArtists" class="btn btn-secondary">Powrót</a>
+    }
+</div>

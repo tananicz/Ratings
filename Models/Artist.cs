@@ -10,10 +10,11 @@ namespace Ratings.Models
         [MaxLength(50)]
         public string Surname { get; set; }
 
-        [Required(ErrorMessage = "Musisz podać imiona")]
+        [Required(ErrorMessage = "Musisz podać imię lub imiona")]
         [MaxLength(50)]
         public string FirstName { get; set; }
 
+        [MaxLength(4096)]
         public string Bio { get; set; }
 
         public byte[] Photo { get; set; }

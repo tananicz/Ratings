@@ -30,6 +30,9 @@
 </style>
 
 <div class="m-2">
+    <div class="mb-3">
+        <a asp-action="ShowArtists" class="btn btn-sm btn-outline-primary">Powrót do listy twórców</a>
+    </div>
     <table class="table table-sm table-borderless worksTable">
         <tbody>
             @{ bool hasPhoto = Model.Artist.Photo != null; }
@@ -43,7 +46,7 @@
                     <p>@Model.Artist.Bio</p>
                     @if (userRoleIndicator >= 2)
                     {
-                        <p class="float-end"><a href="#" class="btn btn-sm btn-warning">Edytuj artystę</a></p>
+                        <p class="float-end"><a asp-action="EditArtist" asp-route-id="@Model.Artist.Id" asp-route-returnUrl="@Context.Request.Path" class="btn btn-sm btn-warning">Edytuj twórcę i utwory</a></p>
                     }
                 </td>
             </tr>
@@ -51,32 +54,39 @@
     </table>
 </div>
 
-<div class="m-2">
-    <table class="table table-sm table-borderless worksTable">
-        <thead>
-            <tr>
-                <th>Tytuł utworu</th>
-                <th>Data wydania</th>
-                <th>Średnia ocena</th>
-                @if (userRoleIndicator >= 1)
-                {
-                    <th>Akcje</th>    
-                }
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (Work work in Model.Works)
-            {
-                <tr class="workRow">
-                    <td>@work.Name</td>
-                    <td>@work.Year</td>
-                    <td>@(work.AvgRating != 0 ? work.AvgRating : "brak")</td>
+@if (Model.Works != null && Model.Works.Count() > 0)
+{
+    <div class="m-2">
+        <table class="table table-sm table-borderless worksTable">
+            <thead>
+                <tr>
+                    <th>Tytuł utworu</th>
+                    <th>Data wydania</th>
+                    <th>Średnia ocena</th>
                     @if (userRoleIndicator >= 1)
                     {
-                        <td><a asp-action="RateAWork" asp-route-id="@work.Id" class="btn btn-sm btn-warning">Oceń</a></td>
+                        <th>Akcje</th>
                     }
                 </tr>
-            }
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+                @foreach (Work work in Model.Works)
+                {
+                    <tr class="workRow">
+                        <td>@work.Name</td>
+                        <td>@work.Year</td>
+                        <td>@(work.AvgRating != 0 ? work.AvgRating : "brak")</td>
+                        @if (userRoleIndicator >= 1)
+                        {
+                            <td><a asp-action="RateAWork" asp-route-id="@work.Id" class="btn btn-sm btn-warning">Oceń</a></td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="m-2">Na razie brak utworów w bazie...</div>
+}

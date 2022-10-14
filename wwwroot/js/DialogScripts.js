@@ -1,4 +1,18 @@
-﻿async function confirmDeleteUser(formId, role) {
+﻿function confirmDeleteWork(formId) {
+    let msgHtml = "Czy jesteś pewien, że chcesz usunąć utwór wraz z wszystkimi jego recenzjami i ocenami?";
+    let buttonsDivHtml = "<button type='submit' form='" + formId + "' class='btn btn-light' style='float: left;'>Tak</button><button onclick='closeDialog();' class='btn btn-light' style='float: right;'>Nie</button>";
+
+    showDialog(buttonsDivHtml, msgHtml);
+}
+
+function confirmDeleteArtist(formId) {
+    let msgHtml = "Czy jesteś pewien, że chcesz usunąć twócę wraz z wszystkimi jego dziełami, recenzjami i ocenami?";
+    let buttonsDivHtml = "<button type='submit' form='" + formId + "' class='btn btn-light' style='float: left;'>Tak</button><button onclick='closeDialog();' class='btn btn-light' style='float: right;'>Nie</button>";
+
+    showDialog(buttonsDivHtml, msgHtml);
+}
+
+async function confirmDeleteUser(formId, role) {
     let resp = await $.get("/api/admincount", null, null, "json");
     let adminsCount = resp.count;
 

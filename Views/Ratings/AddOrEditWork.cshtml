@@ -1,0 +1,28 @@
+﻿@model Work
+
+<h4 class="bg-info text-white text-center mt-2 mb-5 p-4">@(Model.Id != 0 ? "Edytuj" : "Dodaj") utwór</h4>
+
+<div class="mt-2">
+    <div>
+        <p>@(Model.Id != 0 ? "Edytujesz" : "Dodajesz nowy") utwór dla: <strong>@Model.Artist.FirstName @Model.Artist.Surname</strong></p>
+    </div>
+    <form asp-action="PerformAddOrEditWork" method="post" id="workForm">
+        <input name="Id" value="@Model.Id" hidden />
+        <input name="returnUrlForEdit" value="@ViewBag.ReturnUrlForEdit" hidden />
+        <div class="form-group mb-4">
+            <label>Nazwa utworu</label>
+            <div><span asp-validation-for="Name" class="text-danger"></span></div>
+            <input asp-for="Name" class="form-control" />
+        </div>
+        <div class="form-group mb-4">
+            <label>Data premiery / publikacji</label>
+            <div><span asp-validation-for="Year" class="text-danger"></span></div>
+            <input name="Year" value="@(Model.Year == 0 ? "" : Model.Year)" class="form-control" />
+        </div>
+        <input name="ArtistId" value="@Model.Artist.Id" hidden />
+        <div class="mt-5">
+            <button type="submit" class="btn btn-primary">Zapisz</button>
+            <a asp-action="EditArtist" asp-route-id="@Model.Artist.Id" asp-route-returnUrl="@ViewBag.ReturnUrlForEdit" class="btn btn-secondary">Powrót</a>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,33 @@
+﻿.artistRow {
+    background-color: #eee;
+}
+
+.artistRow td {
+    padding: 15px;
+}
+
+.worksTable {
+    border-collapse: separate;
+    border-spacing: 0 5px;
+}
+
+.workRow:hover {
+    background-color: #eee;
+}
+
+.artistRow:hover {
+        background-color: #ddd;
+}
+
+.artistRow h4 a {
+    text-decoration: none;
+}
+
+.artistRow h4 a:hover {
+    text-decoration: underline;
+}
+
+.artistsTable {
+    border-collapse: separate;
+    border-spacing: 0 15px;
+}

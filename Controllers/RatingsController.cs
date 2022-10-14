@@ -109,10 +109,20 @@ namespace Ratings.Controllers
 
         [HttpPost]
         [Authorize(Roles = "moderator,admin")]
-        public async Task<IActionResult> PerformAddOrEditArtist([FromForm(Name = "Artist")] Artist artist, string returnUrl)
+        public async Task<IActionResult> PerformAddOrEditArtist([FromForm(Name = "Artist")] Artist artist, string returnUrl, IFormFile image)
         {
+            if (image != null)
+            { 
+                SetModelStateForFile(image);
+            }
+
             if (ModelState.IsValid)
             {
+                if (image != null)
+                { 
+                    artist.Photo = await GetImageBytes(image);
+                }
+
                 if (artist.Id == 0)
                 {
                     await _repository.AddArtist(artist);
@@ -212,6 +222,27 @@ namespace Ratings.Controllers
                 return RedirectToAction("EditArtist", new { id = artistId, returnUrl = returnUrlForEdit });
             }
             return new StatusCodeResult(StatusCodes.Status403Forbidden);
+        }
+
+        private void SetModelStateForFile(IFormFile file)
+        {
+            string ext = Path.GetExtension(file.FileName);
+            if (!Regex.IsMatch(ext, @"^(.jpg|.jpeg)$"))
+            {
+                ModelState.AddModelError(nameof(Artist.Photo), "Zdjęcie musi mieć format .jpg");
+            }
+
+            if (file.Length > 2097152)
+            {
+                ModelState.AddModelError(nameof(Artist.Photo), "Zdjęcie musi mieć wielkość mniejszą niż 2 MB");
+            }
+        }
+
+        private static async Task<byte[]> GetImageBytes(IFormFile imageFile)
+        {
+            MemoryStream ms = new MemoryStream();
+            await imageFile.OpenReadStream().CopyToAsync(ms);
+            return ms.ToArray();
         }
     }
 }

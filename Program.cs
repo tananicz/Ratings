@@ -50,7 +50,7 @@ app.UseAuthorization();
 
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapControllerRoute("default", "/{controller=Ratings}/{action=Index}/{id:int?}");
+    endpoints.MapControllerRoute("default", "/{controller=Ratings}/{action=Index}/{id?}");
 });
 
 app.Run();

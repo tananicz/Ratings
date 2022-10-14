@@ -1,3 +1,50 @@
-﻿<div>
-    To jest strona główna. Będzie tu kilka najnowszych recenzji...
+﻿@inject RatingsRepository repository
+
+@{
+    IEnumerable<Rating> reviews = await repository.GetLatestReviews(3);
+    IEnumerable<Artist> artists = await repository.GetLatestArtists(5);
+}
+
+<div>
+    <h5 class="p-5 bg-info text-white rounded">
+        Witaj na naszej stronie. Jestśmy prężnie rozwijającą się społecznością.<br/>
+        Opiniujemy filmy, płyty, książki... wszystko co się da!<br/>
+        Dołącz do nas i podziel się swoimi opiniami.
+    </h5>
+    <div class="mt-4" style="float: left; width: 70%;">
+        <div>
+            Ostatnio dodane recenzje
+        </div>
+        @foreach (Rating review in reviews)
+        {
+            <div class="mt-3 p-3 rounded" style="background-color: #ddd;">
+                <div class="mb-5">
+                    <span><strong>@review.UserName</strong> napisał:</span>
+                    <span class="float-end">Ocena:<br/> <span style="font-size: 1.5em;"><strong>@review.RatingValue.ToString()</strong></span></span>
+                </div>
+                <div class="p-2 rounded" style="background-color: #fff;">
+                    @review.Review
+                </div>
+                <div class="mt-2" style="text-align: right;">
+                    Dotyczy: @review.Work.Artist.FirstName @review.Work.Artist.Surname - "@review.Work.Name" (@review.Work.Year)
+                </div>
+            </div>
+        }
+    </div>
+    <div class="mt-4" style="float: left; width: 30%; padding-left: 20px;">
+        <div>
+            Ostatnio dodani twórcy
+        </div>
+        @foreach (Artist artist in artists)
+        {
+            <div class="mt-3 p-3 rounded" style="background-color: #C8BFE7;">
+                <div class="mb-2">
+                    <strong>@artist.FirstName @artist.Surname</strong>
+                </div>
+                <div class="p-2 rounded">
+                    @artist.Bio
+                </div>
+            </div>
+        }
+    </div>
 </div>

@@ -42,37 +42,32 @@ namespace Ratings.Repository
             {
                 IEnumerable<Rating> ratings = _context.Ratings.Where(r => r.WorkId == work.Id);
                 _context.Ratings.RemoveRange(ratings);
-                await _context.SaveChangesAsync();
             }
-
             _context.Works.RemoveRange(worksToRemove);
-            await _context.SaveChangesAsync();
-
             _context.Artists.Remove(artist);
             await _context.SaveChangesAsync();
         }
 
         public List<Work> GetArtistsWorks(int id)
         {
-            return _context.Works.Where(w => w.ArtistId == id).ToList();
+            return _context.Works.Where(w => w.ArtistId == id).OrderBy(w => w.Year).ToList();
         }
 
         public async Task<Work> GetWork(int id, bool includeArtist)
         {
             if (includeArtist)
             {
-                return await _context.Works.Include(w => w.Artist).Where(w => w.Id == id).SingleOrDefaultAsync();
+                return await _context.Works
+                    .Include(w => w.Artist)
+                    .Where(w => w.Id == id)
+                    .SingleOrDefaultAsync();
             }
             else
             { 
-                return await _context.Works.Where(w => w.Id == id).SingleOrDefaultAsync();
+                return await _context.Works
+                    .Where(w => w.Id == id)
+                    .SingleOrDefaultAsync();
             }
-        }
-
-        public async Task UpdateWork(Work work)
-        {
-            _context.Works.Update(work);
-            await _context.SaveChangesAsync();
         }
 
         public async Task AddWork(Work work)
@@ -81,14 +76,65 @@ namespace Ratings.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Rating> GetRating(int workId, string userName)
+        public async Task UpdateWork(Work work)
         {
-            return await _context.Ratings.Include(r => r.Work).ThenInclude(w => w.Artist).Where(r => r.UserName == userName && r.WorkId == workId).SingleOrDefaultAsync();
+            _context.Works.Update(work);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteWork(Work work)
+        {
+            IEnumerable<Rating> ratingsToRemove = _context.Ratings.Where(r => r.WorkId == work.Id);
+            _context.Ratings.RemoveRange(ratingsToRemove);
+            await _context.SaveChangesAsync();
+
+            _context.Works.Remove(work);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<decimal> ComputeRatingForWork(int workId)
         {
-            return await _context.Ratings.Where(r => r.WorkId == workId).AverageAsync(r => r.RatingValue);
+            return await _context.Ratings
+                .Where(r => r.WorkId == workId)
+                .AverageAsync(r => r.RatingValue);
+        }
+
+        public async Task<List<Rating>> GetReviewsForWork(int workId)
+        {
+            return await _context.Ratings
+                .Include(r => r.Work)
+                .ThenInclude(w => w.Artist)
+                .Where(r => r.WorkId == workId && !String.IsNullOrEmpty(r.Review))
+                .OrderByDescending(r => r.Id)
+                .ToListAsync();
+        }
+
+        public async Task<List<Rating>> GetLatestReviews(int count)
+        {
+            return await _context.Ratings
+                .Include(r => r.Work)
+                .ThenInclude(w => w.Artist)
+                .Where(r => !String.IsNullOrEmpty(r.Review))
+                .OrderByDescending(r => r.Id)
+                .Take(count)
+                .ToListAsync();
+        }
+
+        public async Task<List<Artist>> GetLatestArtists(int count)
+        {
+            return await _context.Artists
+                .OrderByDescending(a => a.Id)
+                .Take(count)
+                .ToListAsync();
+        }
+
+        public async Task<Rating> GetRating(int workId, string userName)
+        {
+            return await _context.Ratings
+                .Include(r => r.Work)
+                .ThenInclude(w => w.Artist)
+                .Where(r => r.UserName == userName && r.WorkId == workId)
+                .SingleOrDefaultAsync();
         }
 
         public async Task AddRating(Rating rating)

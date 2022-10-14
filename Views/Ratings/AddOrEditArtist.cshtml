@@ -61,7 +61,9 @@
                         <td>@work.Name</td>
                         <td>@work.Year</td>
                         <td>
-                            <form id="work@(work.Id)Form" class="float-end">
+                            <form asp-action="DeleteWork" id="work@(work.Id)Form" class="float-end">
+                                <input name="id" value="@work.Id" hidden />
+                                <input name="returnUrlForEdit" value="@ViewBag.ReturnUrl" hidden />
                                 <a asp-action="EditWork" asp-route-id="@(work.Id)" asp-route-returnUrlForEdit="@ViewBag.ReturnUrl" class="btn btn-sm btn-warning">Edytuj utwór</a>
                                 <button type="button" onclick="confirmDeleteWork('work@(work.Id)Form');" class="btn btn-sm btn-danger">Usuń utwór</button>
                             </form>    

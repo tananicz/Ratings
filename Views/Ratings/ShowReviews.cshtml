@@ -1,0 +1,40 @@
+﻿@model ReviewsViewModel
+
+@if (Model.Work != null)
+{
+    <div class="m-2">
+        <div class="p-4" style="background-color: #ddd;">
+            <h5>@Model.Work.Artist.FirstName @Model.Work.Artist.Surname</h5>
+            <h4>@Model.Work.Name (@Model.Work.Year)</h4>
+        </div>
+        <div class="mt-3">
+            <a asp-action="ShowArtistAndWorks" asp-route-id="@Model.Work.ArtistId" class="btn btn-sm btn-outline-secondary">Powrót</a>
+        </div>
+        @if (Model.Reviews.Count() > 0)
+        {
+            @foreach (Rating review in Model.Reviews)
+            {
+                <div class="mt-3 p-3 rounded" style="background-color: #23BBFF;">
+                    <div class="mb-5">
+                        <span><strong>@review.UserName</strong> napisał:</span>
+                        <span class="float-end">Ocena:<br/> <span style="font-size: 1.5em;"><strong>@review.RatingValue.ToString()</strong></span></span>
+                    </div>
+                    <div class="p-2 rounded" style="background-color: #fff;">
+                        @review.Review
+                    </div>
+                </div>
+            }
+            <div class="mt-3">
+                <a asp-action="ShowArtistAndWorks" asp-route-id="@Model.Work.ArtistId" class="btn btn-sm btn-outline-secondary">Powrót</a>
+            </div>
+        }
+        else
+        {
+            <div class="mt-3">Brak recenzji utworu...</div>
+        }
+    </div>
+}
+else
+{
+    <div class="m-2">Nie ma utworu o podanym identyfikatorze w bazie danych witryny</div>
+}

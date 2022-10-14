@@ -26,29 +26,32 @@
     };
 }
 
-<div class="m-2">
-    <form asp-action="SaveRating" method="post">
-        <input name="Id" value="@(Model != null ? Model.Id : 0)" hidden />
-        <input name="WorkId" value="@currentWork.Id" hidden />
-        <div class="bg-light p-4">
-            <h4>@currentWork.Artist.FirstName @currentWork.Artist.Surname</h4>
-            <h3>@currentWork.Name (@currentWork.Year)</h3>
-            <p>Średnia ocena: @(currentWork.AvgRating != 0 ? currentWork.AvgRating : "brak")</p>
-        </div>
-        <div class="mt-2 p-2">
-            <p>Twoja ocena:</p>
-            <div><span asp-validation-for="RatingValue" class="text-danger"></span></div>
-            <select asp-for="RatingValue" asp-items="selectListItems" class="form-select">
-                <option disabled selected>wybierz</option>
-            </select>
-        </div>
-        <div class="mt-2 p-2">
-            <p>Twoja recenzja:</p>
-            <textarea asp-for="Review" class="form-control" style="resize: none;" rows="10"></textarea>
-        </div>
-        <div class="p-2 mt-4">
-            <button type="submit" class="btn btn-primary">Zapisz</button>
-            <a asp-action="ShowArtistAndWorks" asp-route-id="@currentWork.ArtistId" class="btn btn-secondary">Powrót</a>
-        </div>
-    </form>
-</div>
+@if (currentWork != null)
+{
+    <div class="m-2">
+        <form asp-action="SaveRating" method="post">
+            <input name="Id" value="@(Model != null ? Model.Id : 0)" hidden />
+            <input name="WorkId" value="@currentWork.Id" hidden />
+            <div class="bg-light p-4">
+                <h4>@currentWork.Artist.FirstName @currentWork.Artist.Surname</h4>
+                <h3>@currentWork.Name (@currentWork.Year)</h3>
+                <p>Średnia ocena: @(currentWork.AvgRating != 0 ? currentWork.AvgRating : "brak")</p>
+            </div>
+            <div class="mt-2 p-2">
+                <p>Twoja ocena:</p>
+                <div><span asp-validation-for="RatingValue" class="text-danger"></span></div>
+                <select asp-for="RatingValue" asp-items="selectListItems" class="form-select">
+                    <option disabled selected>wybierz</option>
+                </select>
+            </div>
+            <div class="mt-2 p-2">
+                <p>Twoja recenzja:</p>
+                <textarea asp-for="Review" class="form-control" style="resize: none;" rows="10"></textarea>
+            </div>
+            <div class="p-2 mt-4">
+                <button type="submit" class="btn btn-primary">Zapisz</button>
+                <a asp-action="ShowArtistAndWorks" asp-route-id="@currentWork.ArtistId" class="btn btn-secondary">Powrót</a>
+            </div>
+        </form>
+    </div>
+}

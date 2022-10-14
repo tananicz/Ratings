@@ -37,6 +37,15 @@ namespace Ratings.Controllers
             return View(viewModel);
         }
 
+        public async Task<IActionResult> ShowReviews([FromRoute(Name = "id")] int workId)
+        {
+            return View(new ReviewsViewModel
+            {
+                Work = await _repository.GetWork(workId, true),
+                Reviews = await _repository.GetReviewsForWork(workId)
+            });
+        }
+
         [Authorize(Roles = "user,moderator,admin")]
         public async Task<IActionResult> RateAWork([FromRoute(Name = "id")] int workId)
         {
@@ -84,13 +93,18 @@ namespace Ratings.Controllers
         [Authorize(Roles = "moderator,admin")]
         public async Task<IActionResult> EditArtist(int id, string returnUrl)
         {
-            ViewBag.ReturnUrl = returnUrl;
-            ArtistViewModel viewModel = new ArtistViewModel
-            {
-                Artist = await _repository.GetArtist(id),
-                Works = _repository.GetArtistsWorks(id)
-            };
-            return View("AddOrEditArtist", viewModel);
+            Artist artist = await _repository.GetArtist(id);
+            if (artist != null)
+            { 
+                ViewBag.ReturnUrl = returnUrl;
+                ArtistViewModel viewModel = new ArtistViewModel
+                {
+                    Artist = artist,
+                    Works = _repository.GetArtistsWorks(id)
+                };
+                return View("AddOrEditArtist", viewModel);
+            }
+            return new StatusCodeResult(StatusCodes.Status403Forbidden);
         }
 
         [HttpPost]
@@ -164,9 +178,9 @@ namespace Ratings.Controllers
         [Authorize(Roles = "moderator,admin")]
         public async Task<IActionResult> PerformAddOrEditWork(Work work, string returnUrlForEdit)
         {
-            if (work.Year > DateTime.Now.Year)
+            if (work.Year < 1 || work.Year > DateTime.Now.Year)
             {
-                ModelState.AddModelError(nameof(Work.Year), "Rok wydania nie może pochodzić z przyszłości");
+                ModelState.AddModelError(nameof(Work.Year), "Rok wydania musi należeć do ery nowożytnej i nie może pochodzić z przyszłości");
             }
 
             if (ModelState.IsValid)
@@ -184,6 +198,20 @@ namespace Ratings.Controllers
             ViewBag.ReturnUrlForEdit = returnUrlForEdit;
             work.Artist = await _repository.GetArtist(work.ArtistId);
             return View("AddOrEditWork", work);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "moderator,admin")]
+        public async Task<IActionResult> DeleteWork(int id, string returnUrlForEdit)
+        {
+            Work workToRemove = await _repository.GetWork(id, false);
+            if (workToRemove != null)
+            {
+                int artistId = workToRemove.ArtistId;
+                await _repository.DeleteWork(workToRemove);
+                return RedirectToAction("EditArtist", new { id = artistId, returnUrl = returnUrlForEdit });
+            }
+            return new StatusCodeResult(StatusCodes.Status403Forbidden);
         }
     }
 }

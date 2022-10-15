@@ -33,7 +33,7 @@
             <textarea asp-for="Artist.Bio" class="form-control" rows="5" style="resize: none;"></textarea>
         </div>
 
-        @if (Model.Artist.Photo != null)
+        @if (Model.Artist?.Photo != null)
         {
             <div class="w-100">
                 <table class="table-borderless w-100">

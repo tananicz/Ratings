@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ratings.Filters;
+using Ratings.Helpers;
 using Ratings.Models;
 using Ratings.Repository;
+using System.Drawing;
 using System.Text.RegularExpressions;
 
 namespace Ratings.Controllers
@@ -118,20 +120,34 @@ namespace Ratings.Controllers
 
             if (ModelState.IsValid)
             {
+                bool continueWithAction = true;
+
                 if (image != null)
-                { 
-                    artist.Photo = await GetImageBytes(image);
+                {
+                    try 
+                    { 
+                        artist.Photo = await AppHelper.GetImageBytes(image);
+                    }
+                    catch
+                    {
+                        ModelState.AddModelError("Artist.Photo", "Wystąpił problem z załadowaniem obrazka");
+                        continueWithAction = false;
+                    }
                 }
 
-                if (artist.Id == 0)
-                {
-                    await _repository.AddArtist(artist);
+                if (continueWithAction)
+                { 
+                    if (artist.Id == 0)
+                    {
+                        await _repository.AddArtist(artist);
+                    }
+                    else
+                    {
+                        await _repository.UpdateArtist(artist);
+                    }
+
+                    return returnUrl != null ? Redirect(returnUrl) : RedirectToAction("ShowArtists");
                 }
-                else
-                {
-                    await _repository.UpdateArtist(artist);
-                }
-                return returnUrl != null ? Redirect(returnUrl) : RedirectToAction("ShowArtists");
             }
             ViewBag.ReturnUrl = returnUrl;
             return View("AddOrEditArtist", new ArtistViewModel 
@@ -236,13 +252,6 @@ namespace Ratings.Controllers
             {
                 ModelState.AddModelError(nameof(Artist.Photo), "Zdjęcie musi mieć wielkość mniejszą niż 2 MB");
             }
-        }
-
-        private static async Task<byte[]> GetImageBytes(IFormFile imageFile)
-        {
-            MemoryStream ms = new MemoryStream();
-            await imageFile.OpenReadStream().CopyToAsync(ms);
-            return ms.ToArray();
         }
     }
 }

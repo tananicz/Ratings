@@ -4,13 +4,13 @@ namespace Ratings.Helpers
 {
     public static class AppHelper
     {
-        public static async Task<byte[]> GetImageBytes(IFormFile imageFile)
+        public static async Task<byte[]> GetImageBytes(Stream imageStream)
         {
             MemoryStream ms = new MemoryStream();
 
             if (System.OperatingSystem.IsWindows())
             {
-                using (Image uploadedImg = Image.FromStream(imageFile.OpenReadStream()))
+                using (Image uploadedImg = Image.FromStream(imageStream))
                 {
                     int squareSize = Math.Min(uploadedImg.Width, uploadedImg.Height);
                     Bitmap croppedImg = new Bitmap(squareSize, squareSize);
@@ -32,7 +32,7 @@ namespace Ratings.Helpers
 
                     using (Graphics g = Graphics.FromImage(croppedImg))
                     {
-                        g.DrawImage(uploadedImg, cropRect);  
+                        g.DrawImage(uploadedImg, cropRect);
                     }
 
                     Bitmap resizedImg = new Bitmap(150, 150);
@@ -46,7 +46,7 @@ namespace Ratings.Helpers
             }
             else
             {
-                await imageFile.OpenReadStream().CopyToAsync(ms);
+                await imageStream.CopyToAsync(ms);
             }
 
             return ms.ToArray();

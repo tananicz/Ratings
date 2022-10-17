@@ -31,10 +31,7 @@ using (IServiceScope scope = app.Services.CreateScope())
         builder.Configuration, 
         scope.ServiceProvider.GetRequiredService<ILogger<IdentitySeeder>>()
         ).Wait();
-    RatingsSeeder.SeedDatabase(
-        scope.ServiceProvider.GetRequiredService<RatingsContext>(),
-        scope.ServiceProvider.GetRequiredService<ILogger<RatingsSeeder>>()
-        ).Wait();
+    RatingsSeeder.SeedDatabase2(scope.ServiceProvider.GetRequiredService<RatingsRepository>(), scope.ServiceProvider.GetRequiredService<ILogger<RatingsSeeder>>()).Wait();
 }
 
 if (app.Environment.IsDevelopment())

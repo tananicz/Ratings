@@ -153,4 +153,8 @@
     <None Include="wwwroot\lib\twitter-bootstrap\scss\_variables.scss" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\img\sample_images\" />
+  </ItemGroup>
+
 </Project>

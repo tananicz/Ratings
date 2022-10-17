@@ -1,20 +1,20 @@
 ﻿function confirmDeleteWork(formId) {
-    let msgHtml = "Czy jesteś pewien, że chcesz usunąć utwór wraz z wszystkimi jego recenzjami i ocenami?";
-    let buttonsDivHtml = "<button type='submit' form='" + formId + "' class='btn btn-light' style='float: left;'>Tak</button><button onclick='closeDialog();' class='btn btn-light' style='float: right;'>Nie</button>";
+    const msgHtml = "Czy jesteś pewien, że chcesz usunąć utwór wraz z wszystkimi jego recenzjami i ocenami?";
+    const buttonsDivHtml = "<button type='submit' form='" + formId + "' class='btn btn-light' style='float: left;'>Tak</button><button onclick='closeDialog();' class='btn btn-light' style='float: right;'>Nie</button>";
 
     showDialog(buttonsDivHtml, msgHtml);
 }
 
 function confirmDeleteArtist(formId) {
-    let msgHtml = "Czy jesteś pewien, że chcesz usunąć twócę wraz z wszystkimi jego dziełami, recenzjami i ocenami?";
-    let buttonsDivHtml = "<button type='submit' form='" + formId + "' class='btn btn-light' style='float: left;'>Tak</button><button onclick='closeDialog();' class='btn btn-light' style='float: right;'>Nie</button>";
+    const msgHtml = "Czy jesteś pewien, że chcesz usunąć twócę wraz z wszystkimi jego dziełami, recenzjami i ocenami?";
+    const buttonsDivHtml = "<button type='submit' form='" + formId + "' class='btn btn-light' style='float: left;'>Tak</button><button onclick='closeDialog();' class='btn btn-light' style='float: right;'>Nie</button>";
 
     showDialog(buttonsDivHtml, msgHtml);
 }
 
 async function confirmDeleteUser(formId, role) {
-    let resp = await $.get("/api/admincount", null, null, "json");
-    let adminsCount = resp.count;
+    const resp = await $.get("/api/admincount", null, null, "json");
+    const adminsCount = resp.count;
 
     let msgHtml = "";
     let buttonsDivHtml = "";
@@ -33,10 +33,10 @@ async function confirmDeleteUser(formId, role) {
 }
 
 function showDialog(buttonsDivHtml, msgHtml) {
-    let divOverlay = document.createElement("div");
+    const divOverlay = document.createElement("div");
     divOverlay.id = "dialogOverlay";
 
-    let div = document.createElement("div");
+    const div = document.createElement("div");
     div.id = "dialog";
     div.style = "display: none;"
 
@@ -46,8 +46,8 @@ function showDialog(buttonsDivHtml, msgHtml) {
     jQuery("#dialogOverlay").addClass("overlay");
     jQuery("#dialog").addClass("outerDialog");
 
-    let dialogHeight = 200;
-    let dialogYPos = Math.round((screen.availHeight - dialogHeight) / 2);
+    const dialogHeight = 200;
+    const dialogYPos = Math.round((screen.availHeight - dialogHeight) / 2);
     jQuery("#dialog").css("height", dialogHeight + "px");
     jQuery("#dialog").css("top", dialogYPos + "px");
 

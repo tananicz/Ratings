@@ -126,7 +126,7 @@ namespace Ratings.Controllers
                 {
                     try 
                     { 
-                        artist.Photo = await AppHelper.GetImageBytes(image);
+                        artist.Photo = await AppHelper.GetImageBytes(image.OpenReadStream());
                     }
                     catch
                     {

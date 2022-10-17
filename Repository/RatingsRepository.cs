@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Ratings.Models;
-using System.Linq;
 
 namespace Ratings.Repository
 {
@@ -11,6 +10,11 @@ namespace Ratings.Repository
         public RatingsRepository(RatingsContext context)
         {
             _context = context;
+        }
+
+        public int GetEntitiesCount<T>() where T : class
+        {
+            return _context.Set<T>().Count();
         }
 
         public List<Artist> GetArtists()
@@ -73,6 +77,12 @@ namespace Ratings.Repository
         public async Task AddWork(Work work)
         {
             await _context.Works.AddAsync(work);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task AddWorks(params Work[] works)
+        {
+            await _context.Works.AddRangeAsync(works);
             await _context.SaveChangesAsync();
         }
 

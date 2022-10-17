@@ -1,18 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Ratings.Helpers;
 using Ratings.Models;
 
 namespace Ratings.Repository
 {
     public class RatingsSeeder
     {
-        public static async Task SeedDatabase(RatingsContext context, ILogger<RatingsSeeder> logger)
+        public static async Task SeedDatabase2(RatingsRepository repository, ILogger<RatingsSeeder> logger)
         {
-            if ((await context.Database.GetPendingMigrationsAsync()).Any())
-            {
-                await context.Database.MigrateAsync();
-            }
-
-            if (!context.Artists.Any() && !context.Works.Any() && !context.Ratings.Any())
+            if (repository.GetEntitiesCount<Artist>() == 0 && repository.GetEntitiesCount<Work>() == 0 && repository.GetEntitiesCount<Rating>() == 0)
             {
                 logger.LogInformation("Baza danych pusta - zasilanie początkowymi danymi");
 
@@ -21,6 +16,7 @@ namespace Ratings.Repository
                     Surname = "Schubert",
                     FirstName = "Franz",
                     Bio = "Ur. 31 stycznia 1797 w Himmelpfortgrund, zm. 19 listopada 1828 w Wiedniu – austriacki kompozytor, prekursor romantyzmu w muzyce",
+                    Photo = await AppHelper.GetImageBytes(new FileStream("wwwroot/img/sample_images/schubert.jpg", FileMode.Open))
                 };
 
                 Artist a2 = new Artist
@@ -28,6 +24,7 @@ namespace Ratings.Repository
                     Surname = "Varèse",
                     FirstName = "Edgard",
                     Bio = "Amerykański kompozytor francuskiego pochodzenia. Przedstawiciel modernizmu",
+                    Photo = await AppHelper.GetImageBytes(new FileStream("wwwroot/img/sample_images/varese.jpg", FileMode.Open))
                 };
 
                 Artist a3 = new Artist
@@ -35,6 +32,7 @@ namespace Ratings.Repository
                     Surname = "Herzog",
                     FirstName = "Werner",
                     Bio = "Ur. 5 września 1942 w Monachium – niemiecki reżyser filmowy, teatralny i operowy; scenarzysta, producent filmowy, aktor, pisarz i poeta pochodzenia chorwackiego",
+                    Photo = await AppHelper.GetImageBytes(new FileStream("wwwroot/img/sample_images/herzog.jpg", FileMode.Open))
                 };
 
                 Artist a4 = new Artist
@@ -42,9 +40,10 @@ namespace Ratings.Repository
                     Surname = "Jarmusch",
                     FirstName = "Jim",
                     Bio = "Ur. 22 stycznia 1953 w Cuyahoga Falls – amerykański reżyser, scenarzysta, aktor i muzyk",
+                    Photo = await AppHelper.GetImageBytes(new FileStream("wwwroot/img/sample_images/jarmusch.jpg", FileMode.Open))
                 };
 
-                await context.Works.AddRangeAsync(
+                await repository.AddWorks(
                     new Work
                     {
                         Name = "Piano Trio No. 2 in E flat major Op. 100 / D. 929",
@@ -111,8 +110,7 @@ namespace Ratings.Repository
                         Year = 1999,
                         Artist = a4,
                     });
-                
-                await context.SaveChangesAsync();
+
                 logger.LogInformation("Zasilanie zakończone");
             }
         }

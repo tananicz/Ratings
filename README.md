@@ -1,4 +1,4 @@
-* Ratings App *
+Ratings App
 
 Simple Ratings application made mostly by using ASP.NET Core and a little bit of JS. It uses Identity Core framework to enable using and creating users accounts.
 There are 3 types of accounts:

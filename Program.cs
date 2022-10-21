@@ -5,15 +5,31 @@ using Ratings.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
+bool isMemoryDb = builder.Configuration.GetValue<bool>("isMemoryDb");
+
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 builder.Services.AddDbContext<IdentityContext>(opts => 
 {
-    opts.UseSqlServer(builder.Configuration["ConnectionStrings:IdentityConnection"]);
+    if (isMemoryDb)
+    {
+        opts.UseInMemoryDatabase("IdentityDb");
+    }
+    else
+    { 
+        opts.UseSqlServer(builder.Configuration["ConnectionStrings:IdentityConnection"]);
+    }
 });
 builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<IdentityContext>();
 builder.Services.AddDbContext<RatingsContext>(opts =>
 {
-    opts.UseSqlServer(builder.Configuration["ConnectionStrings:RatingsConnection"]);
+    if (isMemoryDb)
+    {
+        opts.UseInMemoryDatabase("RatingsDb");
+    }
+    else
+    {
+        opts.UseSqlServer(builder.Configuration["ConnectionStrings:RatingsConnection"]);
+    }
 });
 builder.Services.AddScoped<RatingsRepository>();
 builder.Services.Configure<MvcOptions>(opts => {

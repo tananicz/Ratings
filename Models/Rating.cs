@@ -11,7 +11,7 @@ namespace Ratings.Models
         [Column(TypeName = "decimal(3, 2)")]
         public decimal RatingValue { get; set; }
 
-        [MaxLength(4096)]
+        [MaxLength(4096, ErrorMessage = "Recenzja musi się składać z mniej niż 4096 znaków")]
         public string Review { get; set; }
 
         public string UserId { get; set; }

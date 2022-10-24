@@ -11,19 +11,6 @@
     {
         currentWork = Model.Work;
     }
-
-    List<SelectListItem> selectListItems = new List<SelectListItem>()
-    {
-        new SelectListItem { Value = "1,00", Text = "1" },
-        new SelectListItem { Value = "1,50", Text = "1,5" },
-        new SelectListItem { Value = "2,00", Text = "2" },
-        new SelectListItem { Value = "2,50", Text = "2,5" },
-        new SelectListItem { Value = "3,00", Text = "3" },
-        new SelectListItem { Value = "3,50", Text = "3,5" },
-        new SelectListItem { Value = "4,00", Text = "4" },
-        new SelectListItem { Value = "4,50", Text = "4,5" },
-        new SelectListItem { Value = "5,00", Text = "5" },
-    };
 }
 
 @if (currentWork != null)
@@ -40,12 +27,17 @@
             <div class="mt-2 p-2">
                 <p>Twoja ocena:</p>
                 <div><span asp-validation-for="RatingValue" class="text-danger"></span></div>
-                <select asp-for="RatingValue" asp-items="selectListItems" class="form-select">
+                <select asp-for="RatingValue" class="form-select">
                     <option disabled selected>wybierz</option>
+                    @for (decimal d = 1; d <= 5; d += 0.5m)
+                    {
+                        <option value="@(d.ToString("0.00"))">@(d.ToString("0.0"))</option>
+                    }
                 </select>
             </div>
             <div class="mt-2 p-2">
                 <p>Twoja recenzja:</p>
+                <div><span asp-validation-for="Review" class="text-danger"></span></div>
                 <textarea asp-for="Review" class="form-control" style="resize: none;" rows="10"></textarea>
             </div>
             <div class="p-2 mt-4">

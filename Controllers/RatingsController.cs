@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Ratings.Filters;
 using Ratings.Helpers;
+using Ratings.ModelBinders;
 using Ratings.Models;
 using Ratings.Repository;
-using System.Drawing;
 using System.Text.RegularExpressions;
 
 namespace Ratings.Controllers
@@ -57,7 +57,7 @@ namespace Ratings.Controllers
 
         [HttpPost]
         [Authorize(Roles = "user,moderator,admin")]
-        public async Task<IActionResult> SaveRating(Rating rating)
+        public async Task<IActionResult> SaveRating([ModelBinder(BinderType = typeof(CustomRatingModelBinder))] Rating rating)
         {
             if (ModelState.IsValid)
             {

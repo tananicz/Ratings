@@ -16,7 +16,12 @@ namespace Ratings.ModelBinders
             int id = int.Parse(bindingContext.ValueProvider.GetValue("Id").First());
             string review = bindingContext.ValueProvider.GetValue("Review").First();
             int workId = int.Parse(bindingContext.ValueProvider.GetValue("WorkId").First());
-            decimal ratingValue = decimal.Parse(bindingContext.ValueProvider.GetValue("RatingValue").First(), CultureInfo.CurrentCulture);
+            string ratingValStr = bindingContext.ValueProvider.GetValue("RatingValue").FirstOrDefault();
+            decimal ratingValue = 0;
+            if (!string.IsNullOrEmpty(ratingValStr))
+            {
+                ratingValue = decimal.Parse(ratingValStr, CultureInfo.CurrentCulture);
+            }
 
             Rating rating = new Rating
             {

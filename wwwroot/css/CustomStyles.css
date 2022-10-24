@@ -31,3 +31,8 @@
     border-collapse: separate;
     border-spacing: 0 15px;
 }
+
+img.artistPhoto {
+    width: 150px;
+    height: 150px;
+}

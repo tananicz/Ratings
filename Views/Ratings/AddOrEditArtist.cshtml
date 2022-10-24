@@ -2,6 +2,7 @@
 
 <h4 class="bg-info text-white text-center mt-2 mb-5 p-4">@(Model.Artist != null && Model.Artist.Id != 0 ? "Edytuj" : "Dodaj") twórcę</h4>
 
+<link rel="stylesheet" href="~/css/CustomStyles.css" />
 <link rel="stylesheet" href="~/css/DialogStyles.css" />
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="~/js/DialogScripts.js"></script>
@@ -38,7 +39,7 @@
             <div class="w-100">
                 <table class="table-borderless w-100">
                     <tr>
-                        <td style="width: 160px;"><img src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.Artist.Photo))" /></td>
+                        <td style="width: 160px;"><img class="artistPhoto" src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.Artist.Photo))" /></td>
                         <td>
                             <div class="form-group">
                                 <label>Zdjęcie:</label>

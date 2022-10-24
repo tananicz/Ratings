@@ -20,7 +20,7 @@ In order to run an app please do the following:
 
 - go to main direcory (containing "Ratings.csproj" file), open "appsettings.json" file and provide credentials for admin account (default are Admin/Admin123!)
 - as the app works using https, you'll also need dev certificates which can be created using the following command: dotnet dev-certs https --trust
-- in the same directory run the command: dotnet run -isMemoryDb=true
+- in the same directory run the command: dotnet run --isMemoryDb=true
 
 It's also possible to run app with SQL Server:
 

@@ -11,7 +11,6 @@
     <thead>
         <tr>
             <th>Nazwa użytkownika</th>
-            <th>Identyfikator</th>
             <th>Rola</th>
             <th></th>
         </tr>
@@ -22,7 +21,6 @@
             string role = (await userMgr.GetRolesAsync(user)).FirstOrDefault() ?? "";
             <tr>
                 <td>@user.UserName</td>
-                <td>@user.Id</td>
                 <td>@role</td>
                 <td class="text-center">
                     <form asp-action="DeleteUser" method="post" id="form@(user.Id)">

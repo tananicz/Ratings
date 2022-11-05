@@ -1,12 +1,14 @@
 Ratings App
 
-Simple Ratings application made mostly by using ASP.NET Core and a little bit of JS. It uses Identity Core framework to enable using and creating users accounts.
-There are 3 types of accounts:
-- "admin" has all the control over user accounts (edit/delete) and has access to functionalities that the moderator account has (please see below)
-- "moderator" can add/delete/edit an artist and his/her works; can also write reviews and rate works
-- "user" can only write reviews and rate works
-Unlogged users can only see the works, their average ratings and reviews. Each time a logged in user rates a work there's an average rate computed and saved in the daabase.
-Unlogged users can create their own accounts. If an admin decides a user may be admitted "moderator" priviledges, he can change user's role from "user" to "moderator".
+A simple application which provides platform for ratings - be it of music and composers, books and their authors or movies and their directors.
+
+The basis is a user account system that has the following characteristics:
+- unlogged user is able to select an author and see his photo, bio, list of works, their ratings and reviews (if there are any)
+- unlogged user may create his own account and then rate works and optionally provide some reviews; before user rating is saved in the database a new average rating is computed and stored in the database - that allows not to compute an average each time someone visits some author's page
+- if a particular user is active and provides many reviews and ratings, the administrator may change his role to "moderator" - such user still not only can rate works and write reviews, but also add new artists to the database, provide their photo and bio and add their works to be rated by all users
+- user with an admin role not only has aforementioned moderator's privileges, but can also manage users - edit their credentials or change their role.
+
+Technologies used: C#, ASP.NET Core, ASP.NET Core Identity, Entity Framework Core
 
 Requirements:
 

@@ -143,7 +143,8 @@ namespace Ratings.Controllers
                     }
                     else
                     {
-                        await _repository.UpdateArtist(artist);
+                        bool newPhoto = image != null ? true : false;
+                        await _repository.UpdateArtist(artist, newPhoto);
                     }
 
                     return returnUrl != null ? Redirect(returnUrl) : RedirectToAction("ShowArtists");

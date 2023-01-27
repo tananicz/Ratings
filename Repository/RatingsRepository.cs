@@ -33,8 +33,15 @@ namespace Ratings.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateArtist(Artist artist)
+        public async Task UpdateArtist(Artist artist, bool newPhoto)
         {
+            if (!newPhoto)
+            {
+                Artist tmpArtist = await _context.Artists.Where(a => a.Id == artist.Id).FirstAsync();
+                artist.Photo = tmpArtist.Photo;
+                _context.Entry(tmpArtist).State = EntityState.Detached;
+            }
+
             _context.Artists.Update(artist);
             await _context.SaveChangesAsync();
         }
